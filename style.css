@@ -1,0 +1,35 @@
+html {
+  background-color: #EA9E8D;
+}
+body {
+  /* border: 2px solid #A60021; */
+  box-shadow: 2px 2px 2px 2px rgba(166, 0, 33, 0.5);
+  width: max-content;
+  padding: 20px;
+  text-align: center;
+  background-color: #FF0035;
+  margin: 80px auto;
+}
+
+body button {
+  line-height: 1rem;
+  font-size: 1.2em;
+  border: 1px solid #40476D;
+  border-radius: 8px;
+  box-shadow: 1px 1px 1px 1px #c91338;
+  background-color: #E8F1F2;
+}
+
+.joke {
+  position: relative;
+}
+
+.joke button {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+footer li {
+  list-style-type: none;
+}

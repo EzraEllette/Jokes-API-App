@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <title>Jokes</title>
+    <script>
+      let endPoints = {
+        'general': 'https://official-joke-api.appspot.com/jokes/general/ten',
+        'programming': 'https://official-joke-api.appspot.com/jokes/programming/ten',
+        'random': "https://official-joke-api.appspot.com/random_ten",
+      }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+    <script></script>
+  </head>
+  <body>
+    <header>
+      <h1>Welcome! Select your joke options!</h1>
+      <form id="jokeOptions">
+        <input type="checkbox" name="jokeCategory" value="general" id="generalOption">
+        <label for="generalOption">General</label>
+
+                <input type="checkbox" name="jokeCategory" value="programming" id="programmingOption">
+        <label for="programmingOption">Programming</label>
+
+        <input type="checkbox" name="jokeCategory" value="random" id="randomOption">
+        <label for="randomOption">Random</label>
+
+      </form>
+    </header>
+    <main>
+      <section id="general" style='display:none;'>
+        <h2>GENERAL JOKES</h2>
+        <div id="generalJokes"></div>
+        <button class="addJoke">+</button>
+      </section>
+
+      <section id="programming" style='display:none;'>
+        <h2>PROGRAMING JOKES</h2>
+        <div id="programmingJokes"></div>
+        <button class="addJoke">+</button>
+      </section>
+
+      <section id="random" style='display: none;'>
+        <h2>RANDOM JOKES</h2>
+        <div id="randomJokes"></div>
+        <button class="addJoke">+</button>
+      </section>
+    </main>
+    <footer>
+
+        <h4>Ezra Ellette</h4>
+        <h4>Rodney Matambo</h4>
+
+    </footer>
+    <script id='jokeTemplate' type='text/x-handlebars'>
+      <section class="joke">
+        <h3>Here's a {{type}} joke!</h3>
+        <p id='setup'>{{setup}}</p>
+        <p id='setup'>{{punchline}}</p>
+        <button class='remove-joke' style='display:none;'>x</button>
+      </section>
+    </script>
+
+    <script>
+      $(function () {
+        const jokeTemplate = Handlebars.compile($('#jokeTemplate').html());
+
+        $('#jokeOptions input[type=checkbox]').on('change', function (event) {
+
+          let $section = $(`#${event.currentTarget.value}`);
+
+          if ($section.css('display') === 'none') {
+            $section.css('display', '');
+          } else {
+            $section.css('display', 'none');
+          }
+        });
+        let current = {
+          'general': null,
+          'generalIndex': -1,
+          'programming': null,
+          'programmingIndex': -1,
+          'random': null,
+          'randomIndex': -1,
+        };
+
+        let jokeList = () => {
+          $('.joke').hover(function(event) {
+            let self = $(this);
+            self.css( { 'background-color': 'rgba(0, 0, 0, .1)' } );
+            self.children('button').css('display', '');
+            self.children('button').click(function (event) {
+              $(this).parent('section.joke').remove();
+            });
+          }, function(event) {
+            let self = $(this);
+            self.css( { 'background-color': 'inherit' } );
+
+            self.children('button').css('display', 'none');
+          });
+        };
+
+        $('.addJoke').click(function (event) {
+          let category = $(this).closest('section').attr('id');
+          let index = `${category}Index`
+          if (current[category] && current[index] < 9) {
+            current[index] += 1;
+            $(`#${category}Jokes`).append(jokeTemplate(current[category][current[`${category}Index`]]));
+          } else {
+            $.getJSON(endPoints[category], function(data) {
+              current[category] = data;
+              current[index] = 0;
+              $(`#${category}Jokes`).append(jokeTemplate(current[category][current[index]]));
+            }).done(function() {
+              jokeList();
+            });
+          }
+          jokeList();
+        });
+      });
+    </script>
+  </body>
+</html>
+
